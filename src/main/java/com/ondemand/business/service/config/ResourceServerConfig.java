@@ -4,8 +4,6 @@ import com.ondemand.business.service.constant.DBConstant;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authorization.AuthorityAuthorizationManager;
-import org.springframework.security.authorization.AuthorizationManagers;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,6 +18,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -28,41 +27,41 @@ public class ResourceServerConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-     httpSecurity.exceptionHandling(exceptions -> exceptions
-                     .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
-             .cors(cors -> cors.configurationSource(corsConfigurationSource())).csrf(AbstractHttpConfigurer::disable)
-             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-             .authorizeHttpRequests(authorize -> authorize.requestMatchers("/ondemand/service/**")
-                     .access(AuthorizationManagers.allOf(AuthorityAuthorizationManager.hasAuthority(DBConstant.ROLE.ADMIN.name()),
-                             AuthorityAuthorizationManager.hasAuthority(DBConstant.ROLE.MERCHANT.name())))
-                     .anyRequest().authenticated())
-             .oauth2ResourceServer(
-                     oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
+        httpSecurity.exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())).csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authorize ->
+                        authorize.requestMatchers("/ondemand/service/**")
+                                .hasAuthority(DBConstant.ROLE.ADMIN.name())
+                                .anyRequest().authenticated())
+                .oauth2ResourceServer(
+                        oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
 
 
-     return httpSecurity.build();
+        return httpSecurity.build();
     }
 
- private CorsConfigurationSource corsConfigurationSource() {
-  CorsConfiguration configuration = new CorsConfiguration();
-  configuration.setAllowedOrigins(Arrays.asList("http://localhost:9092"));
-  configuration.setAllowedMethods(Arrays.asList("*"));
-  configuration.setAllowedHeaders(Arrays.asList("*"));
-  UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-  source.registerCorsConfiguration("/**", configuration);
-  return source;
+    private CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:9093"));
+        configuration.setAllowedMethods(List.of("*"));
+        configuration.setAllowedHeaders(List.of("*"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
 
- }
+    }
 
- @Bean
- public JwtAuthenticationConverter jwtAuthenticationConverter() {
-  JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-  grantedAuthoritiesConverter.setAuthoritiesClaimName("role");
-  grantedAuthoritiesConverter.setAuthorityPrefix("");
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("role");
+        grantedAuthoritiesConverter.setAuthorityPrefix("");
 
-  JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-  jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-  return jwtAuthenticationConverter;
- }
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
+        return jwtAuthenticationConverter;
+    }
 
 }

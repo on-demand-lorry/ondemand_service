@@ -4,7 +4,9 @@ import com.ondemand.business.service.entity.ServiceType;
 import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Data;
 
+@Data
 public class ServiceTypeResponseDTO {
     private String category;
 

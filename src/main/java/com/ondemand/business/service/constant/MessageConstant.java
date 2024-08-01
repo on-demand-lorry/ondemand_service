@@ -4,6 +4,9 @@ public class MessageConstant {
 
    public static final String CATEGORY_REQUIRED="Category Required";
 
+   public static final String CATEGORY_DETAILS="Category Details";
+   public  static final String ALL_CATEGORY_DETAILS="All Category List...!";
+
     public static interface Agency{
         public static String ERROR_AGENCY_LICENCE_NUMBER_MIN_LENGTH="Enter Minimum "+ Constant.Length.AGENCY_LICENCE_MIN_NUMBER+" digit Licence Number";
         public static String ERROR_AGENCY__LICENCE_MAX_LENGTH_NUMBER="Enter Maximum "+Constant.Length.AGENCY_LICENCE_MAX_NUMBER+" digit Licence Number";
