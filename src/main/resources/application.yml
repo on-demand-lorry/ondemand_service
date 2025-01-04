@@ -1,12 +1,23 @@
-server:
-  port: 9093
-
+#server:
+#  port: 9093
+#
+#spring:
+#  application:
+#    name: business-service
+#  jpa:
+#    database-platform: org.hibernate.dialect.MySQLDialect
+#    driver-class-name: com.mysql.dbc.Driver
+#    generate-ddl: true
+#  profiles:
+#    active: local
+#server:
+#  port: 9090
+#
 spring:
   application:
     name: business-service
-  jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect
-  driver-class-name: com.mysql.dbc.Driver
-  generate-ddl: true
-  profiles:
-    active: local
+  config:
+    import: "optional:configserver:http://localhost:8082"
+logging:
+  level:
+    web: debug

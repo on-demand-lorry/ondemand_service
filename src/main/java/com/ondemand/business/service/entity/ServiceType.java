@@ -35,9 +35,10 @@ public class ServiceType {
     @Column
     private String logo;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "status", nullable = false)
-    private Status status;
+//    @ManyToOne(optional = false)
+//    @JoinColumn(name = "status", nullable = false)
+    @Column
+    private String status;
 
     @Column(insertable = false, updatable = false)
     private Timestamp createdTime;
